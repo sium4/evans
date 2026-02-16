@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Evan's Bakery</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobile-menu.css">
+    <style>
+        .checkout-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .checkout-form-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .checkout-form-section h2 {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f9f9ff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .shipping-options {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .shipping-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .shipping-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .shipping-option label {
+            flex: 1;
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .order-summary {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .order-summary h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .summary-item.total {
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #667eea;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .checkout-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar--sticky">
+        <div class="navbar__container">
+            <button id="mobileMenuToggle" class="mobile-hamburger" aria-label="Open menu">
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+            </button>
+            <div class="navbar__logo"></div>
+            <div class="navbar__right">
+                <button class="navbar__cart-btn" onclick="window.location.href='cart.html'" style="cursor:pointer;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M2 2H4.5L7 12H16V4H6M7 16C7 16.5304 6.78929 17.0391 6.41421 17.4142C6.03914 17.7893 5.53043 18 5 18C4.46957 18 3.96086 17.7893 3.58579 17.4142C3.21071 17.0391 3 16.5304 3 16M15 16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18C12.4696 18 11.9609 17.7893 11.5858 17.4142C11.2107 17.0391 11 16.5304 11 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="checkout-container">
+        <a href="cart.html" class="back-btn">← Back to Cart</a>
+
+        <div class="checkout-wrapper">
+            <!-- Checkout Form -->
+            <div class="checkout-form-section">
+                <h2>📋 Checkout</h2>
+
+                <!-- Contact Information -->
+                <div class="section-title">Contact Information</div>
+                
+                <div class="form-group">
+                    <label for="fullNameInput">Full Name *</label>
+                    <input type="text" id="fullNameInput" placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="emailInput">Email Address *</label>
+                    <input type="email" id="emailInput" placeholder="john@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneInput">Phone Number *</label>
+                    <input type="tel" id="phoneInput" placeholder="01700000000">
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="section-title">Delivery Address</div>
+
+                <div class="form-group">
+                    <label for="addressInput">Full Address *</label>
+                    <textarea id="addressInput" placeholder="House No., Street, Area"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="cityInput">City/Area *</label>
+                    <input type="text" id="cityInput" placeholder="Dhaka, Chittagong, etc.">
+                </div>
+
+                <!-- Shipping Method -->
+                <div class="section-title">Shipping Method</div>
+                <div class="shipping-options">
+                    <div class="shipping-option">
+                        <input type="radio" id="shippingInside" name="shippingMethod" value="inside" checked>
+                        <label for="shippingInside">Inside Damudya - ৳50</label>
+                    </div>
+                    <div class="shipping-option">
+                        <input type="radio" id="shippingOutside" name="shippingMethod" value="outside">
+                        <label for="shippingOutside">Outside Damudya - ৳150</label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="button" class="submit-btn" id="checkoutBtn">Proceed to Payment</button>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>📦 Order Summary</h2>
+                <div id="orderItemsList"></div>
+                <div class="summary-item">
+                    <span>Subtotal:</span>
+                    <span id="subtotalAmount">৳0.00</span>
+                </div>
+                <div class="summary-item">
+                    <span>Shipping:</span>
+                    <span id="shippingAmount">৳325.00</span>
+                </div>
+                <div class="summary-item">
+                    <span>Tax (10%):</span>
+                    <span id="taxAmount">৳0.00</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total:</span>
+                    <span id="totalAmount">৳0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <p style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Processing your order...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:5000'
+            : 'https://evans-tnow.onrender.com';
+
+        // ============ PAGE LOAD ============
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 Checkout v2 page loaded');
+            updateOrderSummary();
+            attachEventListeners();
+        });
+
+        // ============ UPDATE ORDER SUMMARY ============
+        function updateOrderSummary() {
+            console.log('📦 Updating order summary...');
+            
+            const cartData = localStorage.getItem('evansCart');
+            const cartItems = cartData ? JSON.parse(cartData) : [];
+            console.log('🛒 Cart items:', cartItems);
+
+            const itemsList = document.getElementById('orderItemsList');
+            itemsList.innerHTML = '';
+
+            if (cartItems.length === 0) {
+                itemsList.innerHTML = '<p style="color: #999; padding: 10px 0;">No items in cart</p>';
+                document.getElementById('subtotalAmount').textContent = '৳0.00';
+                document.getElementById('shippingAmount').textContent = '৳50.00';
+                document.getElementById('taxAmount').textContent = '৳0.00';
+                document.getElementById('totalAmount').textContent = '৳0.00';
+                return;
+            }
+
+            // Render items
+            cartItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.style.cssText = 'display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #e0e0e0; font-size:14px;';
+                itemDiv.innerHTML = `
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>৳${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                itemsList.appendChild(itemDiv);
+            });
+
+            // Calculate totals
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const selectedShippingMethod = document.querySelector('input[name="shippingMethod"]:checked')?.value || 'inside';
+            const shippingCosts = { inside: 50, outside: 150 };
+            const shipping = shippingCosts[selectedShippingMethod] || 50;
+            const tax = (subtotal + shipping) * 0.10;
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('subtotalAmount').textContent = `৳${subtotal.toFixed(2)}`;
+            document.getElementById('shippingAmount').textContent = `৳${shipping.toFixed(2)}`;
+            document.getElementById('taxAmount').textContent = `৳${tax.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `৳${total.toFixed(2)}`;
+
+            console.log('✅ Summary updated:', { subtotal, shipping, tax, total });
+        }
+
+        // ============ ATTACH EVENT LISTENERS ============
+        function attachEventListeners() {
+            console.log('🔗 Attaching event listeners...');
+
+            // Update summary when shipping method changes
+            document.querySelectorAll('input[name="shippingMethod"]').forEach(radio => {
+                radio.addEventListener('change', updateShippingAmount);
+            });
+
+            // Handle checkout button click
+            document.getElementById('checkoutBtn').addEventListener('click', handleCheckout);
+            
+            console.log('✅ Event listeners attached');
+        }
+
+        // ============ UPDATE SHIPPING AMOUNT ============
+        function updateShippingAmount() {
+            console.log('📦 Shipping method changed');
+            const cartData = localStorage.getItem('evansCart');
+            const cartItems = cartData ? JSON.parse(cartData) : [];
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            const shippingMethod = document.querySelector('input[name="shippingMethod"]:checked')?.value || 'inside';
+            const shippingCosts = { inside: 50, outside: 150 };
+            const shipping = shippingCosts[shippingMethod] || 50;
+
+            const tax = (subtotal + shipping) * 0.10;
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('shippingAmount').textContent = `৳${shipping.toFixed(2)}`;
+            document.getElementById('taxAmount').textContent = `৳${tax.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `৳${total.toFixed(2)}`;
+        }
+
+        // ============ HANDLE CHECKOUT ============
+        async function handleCheckout() {
+            console.log('🚀 Checkout button clicked');
+
+            // Collect form data
+            const fullName = document.getElementById('fullNameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            const phone = document.getElementById('phoneInput').value.trim();
+            const address = document.getElementById('addressInput').value.trim();
+            const city = document.getElementById('cityInput').value.trim();
+            const shippingMethod = document.querySelector('input[name="shippingMethod"]:checked').value;
+
+            console.log('📝 Form data:', { fullName, email, phone, address, city, shippingMethod });
+
+            // Validate
+            if (!fullName) return alert('❌ Please enter your full name');
+            if (!email || !email.includes('@')) return alert('❌ Please enter a valid email');
+            if (!phone || phone.replace(/\D/g, '').length < 10) return alert('❌ Please enter a valid phone number');
+            if (!address) return alert('❌ Please enter your address');
+            if (!city) return alert('❌ Please enter your city');
+
+            console.log('✅ All validations passed');
+
+            // Get cart
+            const cartData = localStorage.getItem('evansCart');
+            const cartItems = cartData ? JSON.parse(cartData) : [];
+
+            if (!cartItems || cartItems.length === 0) {
+                alert('❌ Your cart is empty!');
+                return;
+            }
+
+            console.log('🛒 Cart:', cartItems);
+
+            // Calculate totals
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shippingCosts = { inside: 50, outside: 150 };
+            const shipping = shippingCosts[shippingMethod] || 50;
+            const tax = (subtotal + shipping) * 0.10;
+            const total = subtotal + shipping + tax;
+
+            console.log('💰 Totals:', { subtotal, shipping, tax, total });
+
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            console.log('⏳ Loading overlay shown');
+
+            // Create order
+            const orderId = 'ORD-' + Date.now();
+            const order = {
+                id: orderId,
+                customerId: 'cust-' + Date.now(),
+                customerName: fullName,
+                email: email,
+                phone: phone,
+                address: address,
+                city: city,
+                items: cartItems,
+                pricing: { subtotal, shipping, tax, total },
+                paymentMethod: 'cod',
+                status: 'confirmed',
+                createdAt: new Date().toISOString()
+            };
+
+            console.log('📦 Order:', order);
+
+            // Save to localStorage
+            localStorage.setItem('currentOrder', JSON.stringify(order));
+            localStorage.removeItem('evansCart');
+            console.log('💾 Order saved to localStorage');
+
+            // Send to backend
+            try {
+                console.log('📤 Sending to backend...');
+                const response = await fetch(`${BACKEND_URL}/api/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerId: order.customerId,
+                        customerName: order.customerName,
+                        customerEmail: order.email || order.customerEmail,
+                        customerPhone: order.phone || order.customerPhone,
+                        items: order.items,
+                        total: order.pricing.total,
+                        shippingAddress: order.address,
+                        shippingCity: order.city
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ Order saved to backend:', result.order?._id);
+                }
+            } catch (err) {
+                console.warn('⚠️ Backend error:', err.message);
+            }
+
+            // Redirect
+            console.log('🎉 Redirecting to confirmation...');
+            setTimeout(() => {
+                window.location.href = `confirmation.html?orderId=${orderId}`;
+            }, 1000);
+        }
+    </script>
+        <!-- Mobile menu markup -->
+        <div id="mobileMenuBackdrop" class="mobile-menu-backdrop" hidden></div>
+
+        <aside id="mobileMenu" class="mobile-menu" aria-hidden="true">
+            <div class="mobile-menu__search">
+                <input id="mobileSearchInput" type="search" placeholder="Search products" aria-label="Search products">
+                <button id="mobileSearchBtn" class="btn btn--green">Search</button>
+            </div>
+
+            <div class="mobile-menu__header">
+                <div class="mobile-menu__title"></div>
+                <button id="mobileMenuClose" class="mobile-menu__close" aria-label="Close menu">✕</button>
+            </div>
+
+            <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+                <ul class="mobile-menu__list">
+                    <li class="mobile-menu__item"><a href="index.html" class="mobile-menu__link">HOME</a></li>
+
+                    <li class="mobile-menu__item mobile-menu__has-children">
+                        <button class="mobile-menu__collapser" data-target="menusSection" aria-expanded="false">MENUS <span class="mobile-menu__collapser-arrow">▼</span></button>
+                        <ul id="menusSection" class="mobile-menu__submenu" hidden aria-hidden="true">
+                            <!-- categories will be populated dynamically -->
+                        </ul>
+                    </li>
+
+                    <li class="mobile-menu__item"><a href="our-story.html" class="mobile-menu__link">OUR STORY</a></li>
+                    <li class="mobile-menu__item"><a href="location.html" class="mobile-menu__link">LOCATION</a></li>
+                    <li class="mobile-menu__item"><a href="contact.html" class="mobile-menu__link">CONTACT US</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <script src="mobile-menu.js" defer></script>
+</body>
+</html>

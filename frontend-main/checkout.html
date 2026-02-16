@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Evan's Bakery</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .checkout-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .checkout-form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .checkout-form h2 {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .shipping-options {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .shipping-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .shipping-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .shipping-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .shipping-option label {
+            flex: 1;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .shipping-cost {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .payment-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .payment-option label {
+            flex: 1;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .order-summary h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.total {
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #667eea;
+        }
+
+        .summary-item.subtotal {
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar--sticky">
+        <div class="navbar__container">
+            <button id="mobileMenuToggle" class="mobile-hamburger" aria-label="Open menu">
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+            </button>
+            <div class="navbar__logo"></div>
+            <div class="navbar__right">
+                <button class="navbar__cart-btn" onclick="window.location.href='cart.html'" style="cursor:pointer;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M2 2H4.5L7 12H16V4H6M7 16C7 16.5304 6.78929 17.0391 6.41421 17.4142C6.03914 17.7893 5.53043 18 5 18C4.46957 18 3.96086 17.7893 3.58579 17.4142C3.21071 17.0391 3 16.5304 3 16M15 16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18C12.4696 18 11.9609 17.7893 11.5858 17.4142C11.2107 17.0391 11 16.5304 11 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="checkout-container">
+        <a href="cart.html" class="back-btn">← Back to Cart</a>
+
+        <div class="checkout-wrapper">
+            <!-- Checkout Form -->
+            <form class="checkout-form" id="checkoutForm">
+                <h2>📋 Checkout</h2>
+
+                <!-- Contact Information -->
+                <div class="section-title">Contact Information</div>
+                
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                    <div class="form-error" id="fullNameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                    <div class="form-error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="01700000000" required>
+                    <div class="form-error" id="phoneError"></div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="section-title">Delivery Address</div>
+
+                <div class="form-group">
+                    <label for="address">Full Address *</label>
+                    <textarea id="address" name="address" placeholder="House No., Street, Area" required></textarea>
+                    <div class="form-error" id="addressError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City/Area *</label>
+                    <input type="text" id="city" name="city" placeholder="Dhaka, Chittagong, etc." required>
+                    <div class="form-error" id="cityError"></div>
+                </div>
+
+                <!-- Shipping Method -->
+                <div class="section-title">Shipping Method</div>
+                <div class="shipping-options">
+                    <div class="shipping-option">
+                        <input type="radio" id="shipping-standard" name="shipping" value="standard" checked>
+                        <label for="shipping-standard">
+                            <strong>Standard Delivery</strong> (3-5 days)
+                        </label>
+                        <span class="shipping-cost">৳325</span>
+                    </div>
+                    <div class="shipping-option">
+                        <input type="radio" id="shipping-express" name="shipping" value="express">
+                        <label for="shipping-express">
+                            <strong>Express Delivery</strong> (1-2 days)
+                        </label>
+                        <span class="shipping-cost">৳975</span>
+                    </div>
+                    <div class="shipping-option">
+                        <input type="radio" id="shipping-overnight" name="shipping" value="overnight">
+                        <label for="shipping-overnight">
+                            <strong>Overnight Delivery</strong> (Same day)
+                        </label>
+                        <span class="shipping-cost">৳1,625</span>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="section-title">Payment Method</div>
+                <div class="payment-option">
+                    <input type="radio" id="payment-cod" name="paymentMethod" value="cod" checked>
+                    <label for="payment-cod">
+                        <strong>Cash on Delivery (COD)</strong> - Pay when you receive your order
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Proceed to Payment</button>
+            </form>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>📦 Order Summary</h2>
+                <div id="orderItems"></div>
+                <div class="summary-item subtotal">
+                    <span>Subtotal:</span>
+                    <span id="orderSubtotal">৳0.00</span>
+                </div>
+                <div class="summary-item">
+                    <span>Shipping:</span>
+                    <span id="orderShipping">৳325.00</span>
+                </div>
+                <div class="summary-item">
+                    <span>Tax (10%):</span>
+                    <span id="orderTax">৳0.00</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total:</span>
+                    <span id="orderTotal">৳0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999;">
+        <div style="background:white; padding:40px; border-radius:10px; text-align:center;">
+            <p style="font-size:18px; margin-bottom:15px;">Processing your order...</p>
+            <div style="width:40px; height:40px; border:4px solid #f0f0f0; border-top:4px solid #667eea; border-radius:50%; animation:spin 1s linear infinite; margin:0 auto;"></div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script>
+        // ==================== GLOBAL VARIABLES ====================
+        const BACKEND_URL = typeof window.BACKEND_URL !== 'undefined'
+            ? window.BACKEND_URL
+            : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:5000'
+                : 'https://evans-tnow.onrender.com';
+
+        // ==================== PAGE INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('✅ Checkout page loaded');
+            console.log('🔗 Backend URL:', BACKEND_URL);
+            
+            try {
+                renderOrderSummary();
+                console.log('✅ Order summary rendered');
+            } catch (error) {
+                console.error('❌ Error rendering summary:', error);
+            }
+            
+            try {
+                attachFormListeners();
+                console.log('✅ Form listeners attached');
+            } catch (error) {
+                console.error('❌ Error attaching form listeners:', error);
+            }
+        });
+
+        // ==================== RENDER ORDER SUMMARY ====================
+        function renderOrderSummary() {
+            const itemsContainer = document.getElementById('orderItems');
+            if (!itemsContainer) {
+                console.warn('⚠️ orderItems container not found');
+                return;
+            }
+
+            // Get cart from localStorage
+            const cartData = localStorage.getItem('evansCart');
+            console.log('🛒 Cart data:', cartData);
+            
+            const cartItems = cartData ? JSON.parse(cartData) : [];
+            console.log('📦 Items:', cartItems);
+
+            if (cartItems.length === 0) {
+                itemsContainer.innerHTML = '<p style="color:#999;">No items in cart</p>';
+                document.getElementById('orderSubtotal').textContent = '৳0.00';
+                document.getElementById('orderShipping').textContent = '৳325.00';
+                document.getElementById('orderTax').textContent = '৳0.00';
+                document.getElementById('orderTotal').textContent = '৳0.00';
+                return;
+            }
+
+            // Render items
+            itemsContainer.innerHTML = cartItems.map(item => `
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #e0e0e0; font-size:14px;">
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>৳${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            // Calculate totals
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = 325; // Default standard shipping
+            const tax = (subtotal + shipping) * 0.10;
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('orderSubtotal').textContent = `৳${subtotal.toFixed(2)}`;
+            document.getElementById('orderShipping').textContent = `৳${shipping.toFixed(2)}`;
+            document.getElementById('orderTax').textContent = `৳${tax.toFixed(2)}`;
+            document.getElementById('orderTotal').textContent = `৳${total.toFixed(2)}`;
+
+            // Update shipping when selection changes
+            document.querySelectorAll('input[name="shipping"]').forEach(radio => {
+                radio.addEventListener('change', updateShippingTotal);
+            });
+        }
+
+        function updateShippingTotal() {
+            const cartData = localStorage.getItem('evansCart');
+            const cartItems = cartData ? JSON.parse(cartData) : [];
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            const shippingMethod = document.querySelector('input[name="shipping"]:checked')?.value;
+            const shippingCosts = { standard: 325, express: 975, overnight: 1625 };
+            const shipping = shippingCosts[shippingMethod] || 325;
+
+            const tax = (subtotal + shipping) * 0.10;
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('orderShipping').textContent = `৳${shipping.toFixed(2)}`;
+            document.getElementById('orderTax').textContent = `৳${tax.toFixed(2)}`;
+            document.getElementById('orderTotal').textContent = `৳${total.toFixed(2)}`;
+        }
+
+        // ==================== ATTACH FORM LISTENERS ====================
+        function attachFormListeners() {
+            const form = document.getElementById('checkoutForm');
+            if (!form) {
+                console.error('❌ checkoutForm not found!');
+                return;
+            }
+            
+            console.log('📝 Adding submit listener to form...');
+            form.addEventListener('submit', handleFormSubmit);
+            console.log('✅ Submit listener added');
+        }
+
+        // ==================== HANDLE FORM SUBMISSION ====================
+        async function handleFormSubmit(e) {
+            console.log('🚀 Form submission triggered!');
+            e.preventDefault();
+            console.log('✅ preventDefault() called');
+
+            try {
+                // Collect form data - only fields that exist in the form
+                console.log('📋 Collecting form data...');
+                const fullName = document.getElementById('fullName')?.value || '';
+                const email = document.getElementById('email')?.value || '';
+                const phone = document.getElementById('phone')?.value || '';
+                const address = document.getElementById('address')?.value || '';
+                const city = document.getElementById('city')?.value || '';
+                
+                const formData = {
+                    fullName,
+                    email,
+                    phone,
+                    address,
+                    city,
+                    shippingMethod: document.querySelector('input[name="shipping"]:checked')?.value || 'standard',
+                    paymentMethod: 'cod'
+                };
+
+                console.log('✅ Form data collected:', formData);
+
+                // ===== VALIDATE BEFORE SHOWING LOADING =====
+                console.log('🔍 Validating form...');
+                
+                if (!formData.fullName.trim()) {
+                    alert('❌ Please enter your full name');
+                    return;
+                }
+                if (!formData.email.trim() || !formData.email.includes('@')) {
+                    alert('❌ Please enter a valid email address');
+                    return;
+                }
+                if (!formData.phone.trim() || formData.phone.replace(/\D/g, '').length < 10) {
+                    alert('❌ Please enter a valid phone number (at least 10 digits)');
+                    return;
+                }
+                if (!formData.address.trim()) {
+                    alert('❌ Please enter your delivery address');
+                    return;
+                }
+                if (!formData.city.trim()) {
+                    alert('❌ Please enter your city');
+                    return;
+                }
+
+                // Check cart
+                const cartData = localStorage.getItem('evansCart');
+                console.log('🛒 Cart data:', cartData);
+                const cartItems = cartData ? JSON.parse(cartData) : [];
+                console.log('📦 Cart items:', cartItems);
+
+                if (!cartItems || cartItems.length === 0) {
+                    alert('❌ Your cart is empty! Please add items before checkout.');
+                    return;
+                }
+
+                console.log('✅ All validations passed!');
+
+                // ===== NOW SHOW LOADING OVERLAY =====
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (!loadingOverlay) {
+                    console.error('❌ Loading overlay not found');
+                    alert('Error: Loading overlay missing');
+                    return;
+                }
+                
+                loadingOverlay.style.display = 'flex';
+                console.log('⏳ Loading overlay shown');
+
+                // Calculate totals
+                const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const shippingCosts = { standard: 325, express: 975, overnight: 1625 };
+                const shipping = shippingCosts[formData.shippingMethod] || 325;
+                const tax = (subtotal + shipping) * 0.10;
+                const total = subtotal + shipping + tax;
+
+                console.log('💰 Calculated:', { subtotal, shipping, tax, total });
+
+                // Create order
+                const orderId = 'ORD-' + Date.now();
+                const order = {
+                    id: orderId,
+                    customerId: 'cust-' + Date.now(),
+                    customerName: formData.fullName,
+                    email: formData.email,
+                    phone: formData.phone,
+                    address: formData.address,
+                    city: formData.city,
+                    items: cartItems,
+                    pricing: {
+                        subtotal: subtotal,
+                        shipping: shipping,
+                        tax: tax,
+                        total: total
+                    },
+                    paymentMethod: 'cod',
+                    status: 'confirmed',
+                    createdAt: new Date().toISOString()
+                };
+
+                console.log('📦 Order created:', order);
+
+                // Save to localStorage
+                localStorage.setItem('currentOrder', JSON.stringify(order));
+                localStorage.removeItem('evansCart');
+                console.log('💾 Order saved to localStorage');
+
+                // Try to save to backend
+                console.log('📤 Attempting to save to backend...');
+                try {
+                    const response = await fetch(`${BACKEND_URL}/api/orders`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            customerId: order.customerId,
+                            customerName: order.customerName,
+                            customerEmail: formData.email || order.email,
+                            customerPhone: formData.phone || order.phone,
+                            items: order.items,
+                            total: order.pricing.total,
+                            shippingAddress: formData.address,
+                            shippingCity: formData.city
+                        })
+                    });
+                    
+                    console.log('📨 Backend response status:', response.status);
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log('✅ Order saved to backend:', result.order?._id);
+                    } else {
+                        console.warn('⚠️ Backend save failed (status ' + response.status + ')');
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Backend connection error:', error.message);
+                }
+
+                // Hide loading
+                loadingOverlay.style.display = 'none';
+                console.log('✅ Loading overlay hidden');
+                
+                // Redirect
+                console.log('🎉 Redirecting to confirmation...');
+                setTimeout(() => {
+                    window.location.href = `confirmation.html?orderId=${orderId}`;
+                }, 500);
+
+            } catch (error) {
+                console.error('❌ ERROR:', error);
+                console.error('📍 Stack:', error.stack);
+                
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+                
+                alert('❌ Error: ' + error.message);
+            }
+        }
+    </script>
+    <!-- Mobile menu markup -->
+    <div id="mobileMenuBackdrop" class="mobile-menu-backdrop" hidden></div>
+
+    <aside id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__search">
+            <input id="mobileSearchInput" type="search" placeholder="Search products" aria-label="Search products">
+            <button id="mobileSearchBtn" class="btn btn--green">Search</button>
+        </div>
+
+        <div class="mobile-menu__header">
+            <div class="mobile-menu__title">Menu</div>
+            <button id="mobileMenuClose" class="mobile-menu__close" aria-label="Close menu">✕</button>
+        </div>
+
+        <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+            <ul class="mobile-menu__list">
+                <li class="mobile-menu__item"><a href="index.html" class="mobile-menu__link">HOME</a></li>
+
+                <li class="mobile-menu__item mobile-menu__has-children">
+                    <button class="mobile-menu__collapser" data-target="menusSection" aria-expanded="false">MENUS <span class="mobile-menu__collapser-arrow">▼</span></button>
+                    <ul id="menusSection" class="mobile-menu__submenu" hidden aria-hidden="true">
+                        <!-- categories will be populated dynamically -->
+                    </ul>
+                </li>
+
+                <li class="mobile-menu__item"><a href="our-story.html" class="mobile-menu__link">OUR STORY</a></li>
+                <li class="mobile-menu__item"><a href="location.html" class="mobile-menu__link">LOCATION</a></li>
+                <li class="mobile-menu__item"><a href="contact.html" class="mobile-menu__link">CONTACT US</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <script src="mobile-menu.js" defer></script>
+    <!-- Include runtime config and main.js for cart object access -->
+    <script src="config.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

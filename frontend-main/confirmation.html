@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Evan's Bakery & Chocolate</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobile-menu.css">
+    
+    <style>
+        .confirmation-container {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(139, 111, 71, 0.1);
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #8B6F47 0%, #C9A876 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+
+        .confirmation-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .confirmation-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .order-details {
+            background: #f9f5f0;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0d2c4;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .detail-value {
+            color: #666;
+            text-align: right;
+        }
+
+        .order-items {
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .order-items h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0d2c4;
+        }
+
+        .item-name {
+            flex: 1;
+        }
+
+        .item-price {
+            text-align: right;
+            min-width: 100px;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8B6F47 0%, #C9A876 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="navbar navbar--sticky">
+        <div class="navbar__container">
+            <button id="mobileMenuToggle" class="mobile-hamburger" aria-label="Open menu">
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+            </button>
+            <div class="navbar__logo"></div>
+            
+            <div class="navbar__center">
+                <a href="index.html" class="navbar__home-btn" title="Home">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
+                    </svg>
+                    <span>Home</span>
+                </a>
+            </div>
+            
+            <div class="navbar__right">
+                <button class="navbar__cart-btn" aria-label="Shopping cart">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M2 2H4.5L7 12H16V4H6M7 16C7 16.5304 6.78929 17.0391 6.41421 17.4142C6.03914 17.7893 5.53043 18 5 18C4.46957 18 3.96086 17.7893 3.58579 17.4142C3.21071 17.0391 3 16.5304 3 16M15 16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18C12.4696 18 11.9609 17.7893 11.5858 17.4142C11.2107 17.0391 11 16.5304 11 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="navbar__cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== PAGE HEADER ==================== -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-header__title">Order Confirmation</h1>
+            <p class="page-header__subtitle">Thank you for your purchase!</p>
+        </div>
+    </section>
+
+    <!-- ==================== CONFIRMATION CONTENT ==================== -->
+    <div class="container">
+        <div class="confirmation-container">
+            <div class="confirmation-icon">✓</div>
+            
+            <h2 class="confirmation-title">Order Placed Successfully!</h2>
+            
+            <p class="confirmation-message">
+                Thank you for shopping with Evan's Bakery & Chocolate. Your order has been confirmed and will be processed shortly.
+            </p>
+
+            <div class="status-badge" id="statusBadge">Status: Confirmed</div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Order Details -->
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="detail-label">Order ID:</span>
+                    <span class="detail-value" id="orderId">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Customer Name:</span>
+                    <span class="detail-value" id="customerName">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value" id="customerEmail">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value" id="customerPhone">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Shipping Address:</span>
+                    <span class="detail-value" id="shippingAddress">-</span>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="order-items">
+                <h3>Order Items</h3>
+                <div id="itemsList"></div>
+                <div class="detail-row" style="margin-top: 20px; font-weight: bold; font-size: 18px;">
+                    <span>Total Amount:</span>
+                    <span id="totalAmount">৳0.00</span>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div style="background: #e8f4f8; padding: 20px; border-radius: 8px; margin: 30px 0; text-align: left;">
+                <h3 style="margin-bottom: 15px; color: #1a1a1a;">What's Next?</h3>
+                <ul style="color: #666; line-height: 1.8;">
+                    <li>📧 A confirmation email has been sent to your email address</li>
+                    <li>🚚 Your order will be processed and shipped soon</li>
+                    <li>📱 You'll receive updates via WhatsApp (if enabled)</li>
+                    <li>💳 Payment must be completed on delivery (COD)</li>
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="confirmation-buttons">
+                <a href="index.html" class="btn-primary">Continue Shopping</a>
+                <button class="btn-secondary" onclick="printOrder()">Print Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__column">
+                    <h4 class="footer__heading">About</h4>
+                    <ul class="footer__links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Story</a></li>
+                    </ul>
+                </div>
+                <div class="footer__column">
+                    <h4 class="footer__heading">Support</h4>
+                    <ul class="footer__links">
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Evan's Bakery & Chocolate. All rights reserved. • developer-Sium</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Mobile menu markup -->
+    <div id="mobileMenuBackdrop" class="mobile-menu-backdrop" hidden></div>
+
+    <aside id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__search">
+            <input id="mobileSearchInput" type="search" placeholder="Search products" aria-label="Search products">
+            <button id="mobileSearchBtn" class="btn btn--green">Search</button>
+        </div>
+
+        <div class="mobile-menu__header">
+            <div class="mobile-menu__title">Menu</div>
+            <button id="mobileMenuClose" class="mobile-menu__close" aria-label="Close menu">✕</button>
+        </div>
+
+        <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+            <ul class="mobile-menu__list">
+                <li class="mobile-menu__item"><a href="index.html" class="mobile-menu__link">HOME</a></li>
+
+                <li class="mobile-menu__item mobile-menu__has-children">
+                    <button class="mobile-menu__collapser" data-target="menusSection" aria-expanded="false">MENUS <span class="mobile-menu__collapser-arrow">▼</span></button>
+                    <ul id="menusSection" class="mobile-menu__submenu" hidden aria-hidden="true">
+                        <!-- categories will be populated dynamically -->
+                    </ul>
+                </li>
+
+                <li class="mobile-menu__item"><a href="our-story.html" class="mobile-menu__link">OUR STORY</a></li>
+                <li class="mobile-menu__item"><a href="location.html" class="mobile-menu__link">LOCATION</a></li>
+                <li class="mobile-menu__item"><a href="contact.html" class="mobile-menu__link">CONTACT US</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <script src="mobile-menu.js" defer></script>
+        <script src="config.js"></script>
+        <script src="main.js"></script>
+    <script>
+        // Load order from URL parameter
+        async function loadOrderConfirmation() {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('orderId');
+
+            console.log('📍 Loading confirmation for order ID:', orderId);
+
+            if (!orderId) {
+                showError('⚠️ No order ID found. Redirecting...');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+
+            // Get order from localStorage - it's saved as 'currentOrder'
+            const currentOrderData = localStorage.getItem('currentOrder');
+            console.log('💾 Current order data:', currentOrderData);
+            
+            const order = currentOrderData ? JSON.parse(currentOrderData) : null;
+
+            if (!order || order.id !== orderId) {
+                console.warn('❌ Order not found in localStorage');
+                showError('❌ Order not found. Please contact support.');
+                return;
+            }
+
+            // Display order details
+            displayOrderDetails(order);
+            console.log('✅ Order loaded:', order);
+        }
+
+        function displayOrderDetails(order) {
+            console.log('📋 Displaying order details:', order);
+            
+            // Order header
+            document.getElementById('orderId').textContent = order.id || '-';
+            
+            // Customer info - order has these at top level
+            const customerName = order.customerName || '-';
+            const customerEmail = order.email || '-';
+            const customerPhone = order.phone || '-';
+            
+            console.log('👤 Customer info:', { customerName, customerEmail, customerPhone });
+            
+            document.getElementById('customerName').textContent = customerName;
+            document.getElementById('customerEmail').textContent = customerEmail;
+            document.getElementById('customerPhone').textContent = customerPhone;
+            
+            // Shipping address
+            const shippingAddress = order.address || order.shippingAddress || '-';
+            document.getElementById('shippingAddress').textContent = shippingAddress;
+
+            // Items list
+            const itemsList = document.getElementById('itemsList');
+            itemsList.innerHTML = '';
+            
+            console.log('📦 Items:', order.items);
+            
+            (order.items || []).forEach(item => {
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                itemRow.innerHTML = `
+                    <div class="item-name">
+                        <strong>${item.name}</strong><br>
+                        <small>Qty: ${item.quantity} × ৳${item.price.toFixed(2)}</small>
+                    </div>
+                    <div class="item-price">৳${(item.price * item.quantity).toFixed(2)}</div>
+                `;
+                itemsList.appendChild(itemRow);
+            });
+
+            // Total - handle both formats
+            const total = order.pricing?.total || order.total || 0;
+            console.log('💰 Total:', total);
+            document.getElementById('totalAmount').textContent = `৳${total.toFixed(2)}`;
+        }
+
+        function showError(message) {
+            console.error('❌', message);
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function printOrder() {
+            const orderId = new URLSearchParams(window.location.search).get('orderId');
+            const currentOrderData = localStorage.getItem('currentOrder');
+            const order = currentOrderData ? JSON.parse(currentOrderData) : null;
+
+            if (order && order.id === orderId) {
+                window.print();
+            } else {
+                alert('Order not found');
+            }
+        }
+
+        // Load order when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔄 Confirmation page loaded');
+            loadOrderConfirmation();
+        });
+    </script>
+</body>
+</html>

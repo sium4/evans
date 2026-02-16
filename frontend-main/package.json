@@ -1,0 +1,15 @@
+{
+  "name": "evans-bakery-frontend-main",
+  "version": "1.0.0",
+  "description": "Main frontend static site for Evan's Bakery",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server",
+    "build": "echo \"window.__BACKEND_URL='${BACKEND_URL:-https://evans-backend.onrender.com}'\" > config.js",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "keywords": ["bakery", "ecommerce", "frontend"],
+  "author": "developer-Sium",
+  "license": "MIT"
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evan's Bakery & Chocolate - Premium Handcrafted Treats</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Mobile Menu Styles -->
+    <link rel="stylesheet" href="mobile-menu.css">
+</head>
+<body>
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="navbar navbar--sticky">
+        <div class="navbar__container">
+            <button id="mobileMenuToggle" class="mobile-hamburger" aria-label="Open menu">
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+                <span class="mobile-hamburger-line"></span>
+            </button>
+            <div class="navbar__logo"></div>
+            
+            <div class="navbar__center">
+                <a href="index.html" class="navbar__home-btn" title="Home">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
+                    </svg>
+                    <span>Home</span>
+                </a>
+                
+                <div class="navbar__categories-dropdown">
+                    <button class="navbar__categories-btn" id="categoriesBtn">
+                        Categories
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="navbar__dropdown-menu" id="dropdownMenu">
+                        <a href="categories.html#milk" class="navbar__dropdown-item">Milk Chocolate</a>
+                        <a href="categories.html#dark" class="navbar__dropdown-item">Dark Chocolate</a>
+                        <a href="categories.html#cakes" class="navbar__dropdown-item">Cakes</a>
+                        <a href="categories.html#pastries" class="navbar__dropdown-item">Pastries</a>
+                        <a href="categories.html#gifts" class="navbar__dropdown-item">Gift Sets</a>
+                    </div>
+                </div>
+                
+                <a href="our-story.html" class="navbar__nav-link" title="Our Story">Our Story</a>
+                <a href="location.html" class="navbar__nav-link" title="Location">Location</a>
+                <a href="contact.html" class="navbar__nav-link" title="Contact Us">Contact Us</a>
+
+                <!-- search moved to right side before cart -->
+            </div>
+            
+            <div class="navbar__right">
+                <div class="navbar__search">
+                    <input 
+                        type="text" 
+                        class="navbar__search-input" 
+                        placeholder="Search products..."
+                        aria-label="Search products"
+                    >
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="2"/>
+                        <path d="M11.5 11.5L16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <button class="navbar__cart-btn" aria-label="Shopping cart">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M2 2H4.5L7 12H16V4H6M7 16C7 16.5304 6.78929 17.0391 6.41421 17.4142C6.03914 17.7893 5.53043 18 5 18C4.46957 18 3.96086 17.7893 3.58579 17.4142C3.21071 17.0391 3 16.5304 3 16M15 16C15 16.5304 14.7893 17.0391 14.4142 17.4142C14.0391 17.7893 13.5304 18 13 18C12.4696 18 11.9609 17.7893 11.5858 17.4142C11.2107 17.0391 11 16.5304 11 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="navbar__cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION WITH GIF BANNER ==================== -->
+    <section class="hero" id="heroSection">
+        <!-- GIF Banner Background -->
+        <div class="hero__banner" id="heroBanner">
+            <img 
+                src="asset/banner2.webp" 
+                alt="Evan's Bakery Premium Banner" 
+                class="hero__banner-img"
+                loading="lazy"
+            >
+        </div>
+        
+        <div class="hero__content">
+            <div class="hero__text">
+                <h1 class="hero__title">Handcrafted Perfection</h1>
+                <p class="hero__subtitle">Premium chocolates & handcrafted bakery made with love</p>
+                <button class="hero__cta btn btn--primary">Explore Collection</button>
+            </div>
+            
+            <!-- 3D Animation Placeholder (will use GSAP for animation) -->
+            <div class="hero__visual" id="heroVisual">
+                <div class="hero__shape hero__shape--chocolate">
+                    <img src="asset/img1.jpg" alt="Premium Bakery Item 1" class="hero__shape-image">
+                </div>
+                <div class="hero__shape hero__shape--croissant">
+                    <img src="asset/img2.jpg" alt="Premium Bakery Item 2" class="hero__shape-image">
+                </div>
+                <div class="hero__shape hero__shape--macarons">
+                    <img src="asset/img3.gif" alt="Premium Bakery Item 3" class="hero__shape-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FEATURED PRODUCTS ==================== -->
+    <section class="featured-products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Favorites</h2>
+                <p class="section-subtitle">Bestsellers & customer favorites</p>
+            </div>
+            
+            <div id="featuredProductsGrid" class="products-grid products-grid--featured">
+                <!-- Featured products will be injected here from categories/products via main.js -->
+            </div>
+            
+            <div class="section-cta">
+                <a href="categories.html" class="btn btn--outline">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== ABOUT SECTION ==================== -->
+    <section class="about">
+        <div class="container">
+            <div class="about__content">
+                <div class="about__text">
+                    <h2 class="section-title">Our Story</h2>
+                    <p class="about__description">
+                        Since 2010, Evan's Bakery & Chocolate has been crafting premium treats with passion and precision. 
+                        We believe in using only the finest ingredients, sustainable practices, and traditional techniques 
+                        passed down through generations.
+                    </p>
+                    <p class="about__description">
+                        Every product is made fresh in our small-batch kitchen, ensuring quality and excellence in every bite. 
+                        We're committed to bringing joy to your moments.
+                    </p>
+                    <button class="btn btn--primary">Learn More</button>
+                </div>
+                <div class="about__image">
+                    <img
+                        src="asset/kitchen.jpg"
+                        alt="Bakey Kitchen"
+                        class="about__image-img"
+                        loading="lazy"
+                    >
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials removed — will be re-added later -->
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <!-- Footer Column 1 -->
+                <div class="footer__column">
+                    <h3 class="footer__title">Evan's Bakery</h3>
+                    <p class="footer__text">Handcrafted chocolate and bakery treats since 2010.</p>
+                    <div class="footer__socials">
+                        <a href="#" class="footer__social-link" aria-label="Facebook">f</a>
+                        <a href="#" class="footer__social-link" aria-label="Instagram">📷</a>
+                        <a href="#" class="footer__social-link" aria-label="Twitter">𝕏</a>
+                        <a href="#" class="footer__social-link" aria-label="Pinterest">📌</a>
+                    </div>
+                </div>
+
+                <!-- Footer Column 2 -->
+                <div class="footer__column">
+                    <h4 class="footer__heading">Quick Links</h4>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="categories.html">Shop</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Footer Column 3 -->
+                <div class="footer__column">
+                    <h4 class="footer__heading">Customer Service</h4>
+                    <ul class="footer__links">
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Footer Column 4 -->
+                <div class="footer__column">
+                    <h4 class="footer__heading">Contact Us</h4>
+                    <div class="footer__contact">
+                        <p><strong>Email:</strong> hello@evansbakery.com</p>
+                        <p><strong>Phone:</strong> (555) 123-4567</p>
+                        <p><strong>Address:</strong> 123 Baker St, Culinary City, CC 12345</p>
+                        <p><strong>Hours:</strong> Mon–Sat 8am–8pm, Sun 10am–6pm</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer__bottom">
+                <p>&copy; 2026 Evan's Bakery & Chocolate. All rights reserved. • developer-Sium</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <!-- Mobile menu markup -->
+    <div id="mobileMenuBackdrop" class="mobile-menu-backdrop" hidden></div>
+
+    <aside id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__search">
+            <input id="mobileSearchInput" type="search" placeholder="Search products" aria-label="Search products">
+            <button id="mobileSearchBtn" class="btn btn--green">Search</button>
+        </div>
+
+        <div class="mobile-menu__header">
+            <div class="mobile-menu__title"></div>
+            <button id="mobileMenuClose" class="mobile-menu__close" aria-label="Close menu">✕</button>
+        </div>
+
+        <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+            <ul class="mobile-menu__list">
+                <li class="mobile-menu__item"><a href="index.html" class="mobile-menu__link">HOME</a></li>
+
+                <li class="mobile-menu__item mobile-menu__has-children">
+                    <button class="mobile-menu__collapser" data-target="menusSection" aria-expanded="false">MENUS <span class="mobile-menu__collapser-arrow">▼</span></button>
+                    <ul id="menusSection" class="mobile-menu__submenu" hidden aria-hidden="true">
+                        <li class="mobile-subitem"><a href="categories.html#cakes">CAKES</a></li>
+                        <li class="mobile-subitem"><a href="categories.html#gift-box">GIFT BOX</a></li>
+                        <li class="mobile-subitem"><a href="categories.html#regular">REGULAR PRODUCT</a></li>
+                        <li class="mobile-subitem"><a href="categories.html#by-flavor">CAKE BY FLAVOR</a></li>
+                        <li class="mobile-subitem"><a href="categories.html#customized">CUSTOMIZED CAKES</a></li>
+                        <li class="mobile-subitem"><a href="categories.html#digital-studio">DIGITAL CAKE STUDIO</a></li>
+                        <li class="mobile-subitem"><a href="categories.html#custom-request">CUSTOM CAKE REQUEST</a></li>
+                    </ul>
+                </li>
+
+                <li class="mobile-menu__item"><a href="our-story.html" class="mobile-menu__link">OUR STORY</a></li>
+                <li class="mobile-menu__item"><a href="location.html" class="mobile-menu__link">LOCATION</a></li>
+                <li class="mobile-menu__item"><a href="contact.html" class="mobile-menu__link">CONTACT US</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <script src="mobile-menu.js" defer></script>
+    <script src="config.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
