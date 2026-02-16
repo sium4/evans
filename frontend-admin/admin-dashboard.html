@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Evan's Bakery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+        }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            background: linear-gradient(180deg, #4A3728 0%, #2d241a 100%);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        /* Off-canvas helpers */
+        .sidebar {
+            transition: transform 0.28s ease;
+            will-change: transform;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 900;
+            opacity: 0;
+            transition: opacity 0.28s ease;
+            pointer-events: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .sidebar-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 0.85rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #E8A9B0;
+        }
+
+        .sidebar-menu a i {
+            margin-right: 0.7rem;
+            min-width: 20px;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.7rem;
+            background: #E8A9B0;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #d89aa0;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            grid-column: 2;
+            margin-left: 0;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar h1 {
+            color: #4A3728;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8B6F47, #6B5436);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .content-area {
+            padding: 2rem;
+        }
+
+        /* ==================== DASHBOARD GRID ==================== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .kpi-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-card .label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .kpi-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4A3728;
+        }
+
+        /* ==================== TABLES ==================== */
+        .table-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-header h3 {
+            color: #4A3728;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #8B6F47;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6B5436;
+        }
+
+        .btn-secondary {
+            background: #E8A9B0;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d89aa0;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: #f9f5f0;
+        }
+
+        table th {
+            padding: 1rem;
+            text-align: left;
+            color: #4A3728;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-delivered {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        /* ==================== FORM ==================== */
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4A3728;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8B6F47;
+            box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h2 {
+            color: #4A3728;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            /* On medium and below, allow the grid to become single column */
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                grid-column: 1;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 600px;
+            }
+        }
+
+        /* Mobile: use off-canvas sidebar */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                width: 250px;
+                height: 100vh;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            /* Show a compact hamburger in the top bar */
+            #sidebarToggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                padding: 0;
+                margin-right: 0.75rem;
+                font-size: 1.25rem;
+                background: transparent;
+                border: 1px solid rgba(0,0,0,0.06);
+                border-radius: 8px;
+            }
+
+            .top-bar h1 {
+                font-size: 1.1rem;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 560px;
+            }
+        }
+
+        /* Reduce font sizes on small screens to help content fit */
+        @media (max-width: 768px) {
+            html, body {
+                font-size: 14px;
+            }
+
+            .top-bar h1 {
+                font-size: 1rem;
+            }
+
+            .kpi-card .value {
+                font-size: 1.4rem;
+            }
+
+            .kpi-card .label {
+                font-size: 0.8rem;
+            }
+
+            table th, table td {
+                font-size: 0.9rem;
+                padding: 0.6rem;
+            }
+
+            .btn {
+                font-size: 0.85rem;
+                padding: 0.5rem 0.9rem;
+            }
+
+            .sidebar-menu a {
+                font-size: 0.95rem;
+                padding: 0.6rem 1rem;
+            }
+
+            .user-avatar {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+
+            .content-area {
+                padding: 1rem;
+            }
+        }
+
+        /* Improve table responsiveness on small screens: remove minimum widths,
+           allow cells to wrap and enable smooth horizontal scrolling when needed. */
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                width: 100%;
+                min-width: 0 !important;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            table th,
+            table td {
+                white-space: normal;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+                padding: 0.75rem;
+            }
+
+            /* Make table header layout friendlier on narrow screens */
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            /* Ensure action buttons don't force extra width */
+            table td .btn {
+                white-space: nowrap;
+                display: inline-flex;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ==================== UTILITIES ==================== */
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .success-message {
+            background: #d1e7dd;
+            color: #0f5132;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #842029;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- ==================== SIDEBAR ==================== -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🍫 Admin</h2>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="#" class="menu-link active" data-section="dashboard">📊 Dashboard</a></li>
+                <li><a href="#" class="menu-link" data-section="orders">📦 Orders</a></li>
+                <li><a href="#" class="menu-link" data-section="products">🛍️ Products</a></li>
+                <li><a href="#" class="menu-link" data-section="categories">📁 Categories</a></li>
+                <li><a href="#" class="menu-link" data-section="users">👥 Users</a></li>
+                <li><a href="#" class="menu-link" data-section="settings">⚙️ Settings</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <main class="main-content">
+            <!-- ==================== TOP BAR ==================== -->
+            <div class="top-bar">
+                <button id="sidebarToggle" aria-label="Open menu" class="hidden">☰</button>
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="user-info">
+                    <div>
+                        <div id="userName" style="font-weight: 600;">Admin User</div>
+                        <div style="font-size: 0.85rem; color: #999;">Administrator</div>
+                    </div>
+                    <div class="user-avatar" id="userAvatar">A</div>
+                </div>
+            </div>
+
+            <!-- ==================== CONTENT AREA ==================== -->
+            <div class="content-area">
+                <!-- DASHBOARD SECTION -->
+                <div id="dashboard" class="section">
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="icon">📦</div>
+                            <div class="label">Total Orders</div>
+                            <div class="value" id="totalOrders">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="icon">💰</div>
+                            <div class="label">Total Sales</div>
+                            <div class="value" id="totalSales">$0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="icon">🛍️</div>
+                            <div class="label">Products</div>
+                            <div class="value" id="totalProducts">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="icon">👥</div>
+                            <div class="label">Users</div>
+                            <div class="value" id="totalUsers">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Recent Orders</h3>
+                            <a href="#" class="menu-link" data-section="orders" style="color: #8B6F47; text-decoration: none;">View All →</a>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrdersBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #999;">No orders yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ORDERS SECTION -->
+                <div id="orders" class="section hidden">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Order Management</h3>
+                            <button class="btn btn-primary" onclick="exportOrdersToExcel()">📥 Export to Excel</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #999;">Loading orders...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PRODUCTS SECTION -->
+                <div id="products" class="section hidden">
+                    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="color: #4A3728;">Product Management</h2>
+                        <button class="btn btn-primary" onclick="openProductModal()">+ Add Product</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #999;">Loading products...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CATEGORIES SECTION -->
+                <div id="categories" class="section hidden">
+                    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="color: #4A3728;">Category Management</h2>
+                        <button class="btn btn-primary" onclick="openCategoryModal()">+ Add Category</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Products</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #999;">Loading categories...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- USERS SECTION -->
+                <div id="users" class="section hidden">
+                    <h2 style="color: #4A3728; margin-bottom: 1.5rem;">User Management</h2>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Orders</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #999;">Loading users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SETTINGS SECTION -->
+                <div id="settings" class="section hidden">
+                    <h2 style="color: #4A3728; margin-bottom: 1.5rem;">Settings</h2>
+
+                    <div class="form-container">
+                        <h3 style="margin-bottom: 1rem;">Store Information</h3>
+                        
+                        <div class="form-group">
+                            <label>Store Name</label>
+                            <input type="text" value="Evan's Bakery & Chocolate" id="storeName">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" value="hello@evansbakery.com" id="storeEmail">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" value="+1 (555) 123-4567" id="storePhone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>WhatsApp Number for Orders</label>
+                            <input type="tel" placeholder="+1234567890" id="whatsappNumber">
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay for off-canvas sidebar -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- MODALS -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add/Edit Product</h2>
+                <button class="close-btn" onclick="closeModal('productModal')">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="productCategory" required>
+                        <option value="">Select category</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock *</label>
+                        <input type="number" id="productStock" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="productDescription" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Product Image</label>
+                    <input type="file" id="productImage" accept="image/*">
+                    <div style="color: #666; font-size: 0.9rem; margin-top: 8px; line-height: 1.6;">
+                        <small>✓ Formats: JPG, PNG, GIF (Max 5MB)</small><br>
+                        <small>✓ Recommended: 500x500px or 600x600px (1:1 ratio)</small><br>
+                        <small>✓ Best Quality: JPG or PNG (compress for web)</small>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add/Edit Category</h2>
+                <button class="close-btn" onclick="closeModal('categoryModal')">&times;</button>
+            </div>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label>Category Name *</label>
+                    <input type="text" id="categoryName" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="categoryDescription" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Category</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Order Details</h2>
+                <button class="close-btn" onclick="closeModal('orderModal')">&times;</button>
+            </div>
+            <div id="orderDetailsContent">
+                <!-- Filled dynamically by admin-dashboard.js -->
+                <div style="text-align:center; color:#999;">Loading...</div>
+            </div>
+            <div style="margin-top:1rem; display:flex; gap:8px; justify-content:flex-end;">
+                <select id="orderStatusSelect" style="padding:0.5rem; border-radius:6px; border:1px solid #ddd;">
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="delivered">Delivered</option>
+                </select>
+                <button class="btn btn-secondary" onclick="patchOrderStatusFromModal()">Save Status</button>
+                <button class="btn" onclick="closeModal('orderModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

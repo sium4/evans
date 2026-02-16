@@ -1,0 +1,233 @@
+{
+  "admins": [
+    {
+      "_id": "base",
+      "email": "rhs0@yahoo.com",
+      "password": "$2a$10$ucL/kp9DXZ2jY2wUvqrKYOk8um.Q6/bUOiKFRinmipoYM42/G0bqG",
+      "name": "Sium",
+      "role": "admin"
+    }
+  ],
+  "users": [
+    {
+      "_id": "user1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "$2a$10$rWjJ8fZ7QK3p4M5Q6R7S8Q2p4M5Q6R7S8Q2p4M5Q6R7S8Q",
+      "role": "customer",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "orderCount": 3
+    }
+  ],
+  "products": [
+    {
+      "_id": "70ggj0r3u",
+      "name": "milk chocolate",
+      "category": "Sium",
+      "price": 34,
+      "stock": 0,
+      "description": "",
+      "image": "1771067013901-logo.png",
+      "createdAt": "2026-02-14T11:03:33.906Z"
+    },
+    {
+      "_id": "9rpsidgrc",
+      "name": "sio",
+      "category": "chocolate",
+      "price": 344,
+      "stock": 0,
+      "description": "",
+      "image": "/uploads/products/product-1771099420971-779439667.jpg",
+      "createdAt": "2026-02-14T20:03:40.983Z"
+    },
+    {
+      "_id": "5hhheefo9",
+      "name": "dhsj",
+      "category": "chocolate",
+      "price": 45,
+      "stock": 0,
+      "description": "",
+      "image": "/uploads/products/default.jpg",
+      "createdAt": "2026-02-14T20:09:22.734Z"
+    },
+    {
+      "_id": "lrv9kgxz0",
+      "name": "Evan Gift Box 1",
+      "category": "Evan's Gift Box",
+      "price": 100,
+      "stock": 0,
+      "description": "",
+      "image": "/uploads/products/product-1771102150705-462931238.jpg",
+      "createdAt": "2026-02-14T20:49:10.711Z"
+    },
+    {
+      "_id": "l0635ihqp",
+      "name": "Popular",
+      "category": "Best Selling",
+      "price": 230,
+      "stock": 0,
+      "description": "",
+      "image": "/uploads/products/product-1771102187437-241598346.jpg",
+      "createdAt": "2026-02-14T20:49:47.439Z"
+    },
+    {
+      "_id": "wnnmdi9gw",
+      "name": "Evan Gift Box 2",
+      "category": "Best Selling",
+      "price": 234,
+      "stock": 0,
+      "description": "",
+      "image": "/uploads/products/product-1771102259970-64257589.jpg",
+      "createdAt": "2026-02-14T20:50:59.971Z"
+    }
+  ],
+  "categories": [
+    {
+      "_id": "ste6se9ny",
+      "name": "Sium",
+      "description": "rjhff",
+      "productCount": 0,
+      "createdAt": "2026-02-14T10:49:20.116Z"
+    },
+    {
+      "_id": "31ys9a75o",
+      "name": "chocolate",
+      "description": "dhjhfd",
+      "productCount": 0,
+      "createdAt": "2026-02-14T11:02:09.334Z"
+    },
+    {
+      "_id": "qji9sbj9t",
+      "name": "Milk",
+      "description": "Cow Milk",
+      "productCount": 0,
+      "createdAt": "2026-02-14T18:54:28.845Z"
+    },
+    {
+      "_id": "1ibjmujyy",
+      "name": "Best Selling",
+      "description": "",
+      "productCount": 0,
+      "createdAt": "2026-02-14T20:48:07.399Z"
+    },
+    {
+      "_id": "vj62udrvi",
+      "name": "Popular ",
+      "description": "",
+      "productCount": 0,
+      "createdAt": "2026-02-14T20:48:14.430Z"
+    },
+    {
+      "_id": "7xgn16qtq",
+      "name": "Evan's Gift Box",
+      "description": "",
+      "productCount": 0,
+      "createdAt": "2026-02-14T20:48:20.397Z"
+    },
+    {
+      "_id": "1isqid735",
+      "name": "sumaiya",
+      "description": "hello sumaiya",
+      "productCount": 0,
+      "createdAt": "2026-02-15T21:12:43.186Z"
+    },
+    {
+      "_id": "bz7m3hqp9",
+      "name": "goru",
+      "description": "goru",
+      "productCount": 0,
+      "createdAt": "2026-02-15T21:16:04.870Z"
+    },
+    {
+      "_id": "xnxhnfjn1",
+      "name": "101",
+      "description": "101",
+      "productCount": 0,
+      "createdAt": "2026-02-15T21:18:48.961Z"
+    },
+    {
+      "_id": "3trqb4de3",
+      "name": "CategoryFromAdmin",
+      "description": "created via curl",
+      "productCount": 0,
+      "createdAt": "2026-02-15T21:21:55.930Z"
+    },
+    {
+      "_id": "pn79bkv1c",
+      "name": "102",
+      "description": "102",
+      "productCount": 0,
+      "createdAt": "2026-02-15T21:24:15.648Z"
+    },
+    {
+      "_id": "3fe23s27k",
+      "name": "103",
+      "description": "104",
+      "productCount": 0,
+      "createdAt": "2026-02-15T21:25:27.470Z"
+    }
+  ],
+  "orders": [
+    {
+      "_id": "ORD1771183304048",
+      "customerId": "cust-1771183304043",
+      "customerName": "Sium",
+      "customerEmail": "rhs0@yahoo.com",
+      "customerPhone": "01521201289",
+      "items": [
+        {
+          "id": "70ggj0r3u",
+          "name": "milk chocolate",
+          "category": "sium",
+          "price": 34,
+          "description": "",
+          "badge": "",
+          "image": "http://localhost:5000/uploads/products/1771067013901-logo.png",
+          "quantity": 1
+        },
+        {
+          "id": "9rpsidgrc",
+          "name": "sio",
+          "category": "chocolate",
+          "price": 344,
+          "description": "",
+          "badge": "",
+          "image": "http://localhost:5000/uploads/products/product-1771099420971-779439667.jpg",
+          "quantity": 1
+        },
+        {
+          "id": "5hhheefo9",
+          "name": "dhsj",
+          "category": "chocolate",
+          "price": 45,
+          "description": "",
+          "badge": "",
+          "image": "http://localhost:5000/uploads/products/default.jpg",
+          "quantity": 1
+        },
+        {
+          "id": "l0635ihqp",
+          "name": "Popular",
+          "category": "bestselling",
+          "price": 230,
+          "description": "",
+          "badge": "",
+          "image": "http://localhost:5000/uploads/products/product-1771102187437-241598346.jpg",
+          "quantity": 1
+        }
+      ],
+      "total": 773.3,
+      "shippingCity": "DHAKA",
+      "status": "pending",
+      "shippingAddress": "WARD NO 03, SOUTH DAMUDYA\nDAMUDYA-8040, SHARIATPUR",
+      "createdAt": "2026-02-15T19:21:44.048Z",
+      "updatedAt": "2026-02-15T19:21:44.048Z"
+    }
+  ],
+  "settings": {
+    "storeName": "Evan's Bakery & Chocolate",
+    "storeEmail": "hello@evansbakery.com",
+    "storePhone": "+1 (555) 123-4567",
+    "whatsappNumber": ""
+  }
+}

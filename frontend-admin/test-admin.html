@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login Test - Evan's Bakery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; margin-bottom: 1rem; }
+        .test-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-section h3 {
+            color: #8B6F47;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        input { 
+            width: 100%; 
+            padding: 0.75rem; 
+            margin: 0.5rem 0; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+        }
+        button {
+            background: #8B6F47;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem 0;
+            width: 100%;
+        }
+        button:hover { background: #6B5436; }
+        .output {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            word-break: break-all;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍫 Admin Login Diagnostics</h1>
+        
+        <div class="test-section">
+            <h3>1️⃣ Server Connection</h3>
+            <button onclick="testServerConnection()">Test Server</button>
+            <div id="serverStatus" class="output"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2️⃣ API Connection</h3>
+            <button onclick="testAPIConnection()">Test API</button>
+            <div id="apiStatus" class="output"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3️⃣ Login Test</h3>
+            <input type="email" id="testEmail" placeholder="Email" value="admin@demo.com">
+            <input type="password" id="testPassword" placeholder="Password" value="demo123456">
+            <button onclick="testLogin()">Test Login</button>
+            <div id="loginStatus" class="output"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4️⃣ Browser Storage</h3>
+            <button onclick="checkStorage()">Check Storage</button>
+            <div id="storageStatus" class="output"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5️⃣ Clear & Reset</h3>
+            <button onclick="clearStorage()" style="background: #dc3545;">Clear All Data</button>
+            <button onclick="location.href='admin-login.html'" style="background: #28a745;">Go to Login</button>
+            <div id="clearStatus" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:5000';
+
+        function log(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const span = document.createElement('div');
+            span.className = type;
+            span.innerHTML = `[${timestamp}] <strong>${type.toUpperCase()}:</strong> ${message}`;
+            el.appendChild(span);
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        async function testServerConnection() {
+            clearLog('serverStatus');
+            log('serverStatus', 'Testing server connection...', 'info');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/`, { timeout: 5000 });
+                log('serverStatus', `✅ Server responding (Status: ${response.status})`, 'success');
+            } catch (error) {
+                log('serverStatus', `❌ Server not responding: ${error.message}`, 'error');
+                log('serverStatus', `Make sure to run: npm start in /Users/sium/Desktop/evan`, 'warning');
+            }
+        }
+
+        async function testAPIConnection() {
+            clearLog('apiStatus');
+            log('apiStatus', 'Testing API connection...', 'info');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/categories`);
+                const data = await response.json();
+                log('apiStatus', `✅ API responding with ${data.length} categories`, 'success');
+                log('apiStatus', JSON.stringify(data, null, 2), 'info');
+            } catch (error) {
+                log('apiStatus', `❌ API error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testLogin() {
+            clearLog('loginStatus');
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+
+            if (!email || !password) {
+                log('loginStatus', 'Please enter email and password', 'error');
+                return;
+            }
+
+            log('loginStatus', `Attempting login with ${email}...`, 'info');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log('loginStatus', `✅ Login successful!`, 'success');
+                    log('loginStatus', `Token: ${data.token.substring(0, 50)}...`, 'info');
+                    log('loginStatus', `User: ${JSON.stringify(data.user)}`, 'info');
+                } else {
+                    log('loginStatus', `❌ Login failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log('loginStatus', `❌ Login error: ${error.message}`, 'error');
+            }
+        }
+
+        function checkStorage() {
+            clearLog('storageStatus');
+            const token = localStorage.getItem('adminToken');
+            const user = localStorage.getItem('adminUser');
+            
+            if (token) {
+                log('storageStatus', `✅ Token found (${token.substring(0, 30)}...)`, 'success');
+            } else {
+                log('storageStatus', '⚠️ No token in storage', 'warning');
+            }
+
+            if (user) {
+                log('storageStatus', `✅ User found: ${user}`, 'success');
+            } else {
+                log('storageStatus', '⚠️ No user in storage', 'warning');
+            }
+
+            log('storageStatus', `Total storage items: ${localStorage.length}`, 'info');
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            document.getElementById('clearStatus').innerHTML = '<div class="success">✅ Storage cleared successfully. You can now login again.</div>';
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('DOMContentLoaded', () => {
+            log('serverStatus', 'Page loaded. Click buttons to test.', 'info');
+        });
+    </script>
+</body>
+</html>
