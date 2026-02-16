@@ -33,7 +33,17 @@ if (MONGO_URI) {
 const app = express();
 
 // ==================== MIDDLEWARE ====================
-app.use(cors());
+// Configure CORS with optional allowed origins from env var `ALLOWED_ORIGINS`.
+// If `ALLOWED_ORIGINS` is empty, all origins are allowed (backward compatible).
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+app.use(cors({
+    origin: (origin, cb) => {
+        // allow non-browser requests like curl/postman
+        if (!origin) return cb(null, true);
+        if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) return cb(null, true);
+        cb(new Error('CORS origin not allowed'));
+    }
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -853,14 +863,15 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.use((req, res) => {
-    res.status(404).json({ error: 'Route not found' });
-});
-
 // ==================== SERVER START ====================
 // Root health endpoint - helpful for platforms and browser checks
 app.get('/', (req, res) => {
     res.json({ ok: true, message: "Evan backend running", statusEndpoint: '/api/status' });
+});
+
+// Readiness probe for load balancers / orchestrators
+app.get('/healthz', (req, res) => {
+    res.status(200).json({ status: 'ok' });
 });
 
 app.get('/api/status', (req, res) => {
@@ -873,6 +884,11 @@ app.get('/api/status', (req, res) => {
             ? fs.readdirSync(path.join(__dirname, 'uploads/products'))
             : []
     });
+});
+
+// 404 fallback - must come after all route definitions
+app.use((req, res) => {
+    res.status(404).json({ error: 'Route not found' });
 });
 
 const PORT = process.env.PORT || 5000;
