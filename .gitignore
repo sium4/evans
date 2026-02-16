@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*.local
+
+# Build output / config injection
+/frontend-main/config.js
+/frontend-admin/config.js
+
+# Local files / OS
+.DS_Store
+
+# Uploaded media & database file (do not commit production data)
+/backend/uploads/
+/backend/database.json
+/frontend-admin/uploads/
+
+# Ignore generated runtime config
+config.js
