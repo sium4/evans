@@ -858,6 +858,11 @@ app.use((req, res) => {
 });
 
 // ==================== SERVER START ====================
+// Root health endpoint - helpful for platforms and browser checks
+app.get('/', (req, res) => {
+    res.json({ ok: true, message: "Evan backend running", statusEndpoint: '/api/status' });
+});
+
 app.get('/api/status', (req, res) => {
     res.json({
         status: 'online',
