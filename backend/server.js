@@ -874,16 +874,59 @@ app.get('/healthz', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
-app.get('/api/status', (req, res) => {
-    res.json({
-        status: 'online',
-        productsCount: database.products.length,
-        categoriesCount: database.categories.length,
-        uploadsDir: path.join(__dirname, 'uploads/products'),
-        uploadedFiles: fs.existsSync(path.join(__dirname, 'uploads/products')) 
-            ? fs.readdirSync(path.join(__dirname, 'uploads/products'))
-            : []
-    });
+app.get('/api/status', async (req, res) => {
+    try {
+        // Prefer MongoDB counts when connected and models are available
+        if (mongoose.connection.readyState === 1) {
+            let productsCount = 0;
+            let categoriesCount = 0;
+
+            try {
+                if (ProductModel && typeof ProductModel.countDocuments === 'function') {
+                    productsCount = await ProductModel.countDocuments();
+                } else {
+                    // try collection fallback
+                    const prodColl = mongoose.connection.db.collection('products');
+                    productsCount = prodColl ? await prodColl.countDocuments() : (database.products ? database.products.length : 0);
+                }
+            } catch (e) {
+                productsCount = database.products ? database.products.length : 0;
+            }
+
+            try {
+                const catColl = mongoose.connection.db.collection('categories');
+                categoriesCount = catColl ? await catColl.countDocuments() : (database.categories ? database.categories.length : 0);
+            } catch (e) {
+                categoriesCount = database.categories ? database.categories.length : 0;
+            }
+
+            const uploadedFiles = fs.existsSync(path.join(__dirname, 'uploads/products'))
+                ? fs.readdirSync(path.join(__dirname, 'uploads/products'))
+                : [];
+
+            return res.json({
+                status: 'online',
+                productsCount,
+                categoriesCount,
+                uploadsDir: path.join(__dirname, 'uploads/products'),
+                uploadedFiles
+            });
+        }
+
+        // Fallback to file DB
+        return res.json({
+            status: 'online',
+            productsCount: database.products.length,
+            categoriesCount: database.categories.length,
+            uploadsDir: path.join(__dirname, 'uploads/products'),
+            uploadedFiles: fs.existsSync(path.join(__dirname, 'uploads/products'))
+                ? fs.readdirSync(path.join(__dirname, 'uploads/products'))
+                : []
+        });
+    } catch (err) {
+        console.error('/api/status error:', err);
+        res.status(500).json({ error: 'Failed to fetch status' });
+    }
 });
 
 // 404 fallback - must come after all route definitions
